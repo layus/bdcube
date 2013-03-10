@@ -7,7 +7,6 @@ package be.ac.ucl.info.bdcube;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sf.javabdd.BDD;
@@ -39,7 +38,8 @@ public class Main {
      // 6 possible colors for each domain.
      Arrays.fill(sizes, 6);
      
-     //BDDDomain[] squares = bdd.extDomain(sizes);
+     //BDDDomain[] squares = 
+     bdd.extDomain(sizes);
      
      List<BDDPairing> perms = allPerms();
      
