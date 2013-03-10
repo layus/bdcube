@@ -52,8 +52,8 @@ public class Main {
      int i = 0;
      while ( !cube.imp(frontier).isOne() ){
     	 addAll(1, perms, frontier, frontier.id());
-    	 i++;
     	 System.out.println(i);
+    	 i++;
      }
      
      System.out.println("Number of moves to solve : " + i);
