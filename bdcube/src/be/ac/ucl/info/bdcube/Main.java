@@ -7,7 +7,9 @@ package be.ac.ucl.info.bdcube;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDDomain;
@@ -26,6 +28,10 @@ public class Main {
  static int k = 3; // number of moves
 
  public static void main(String[] args) {
+	 //System.loadLibrary("buddy");
+	 //System.loadLibrary("cal");
+	 //System.loadLibrary("cudd");
+	 
      bdd = BDDFactory.init(1000000, 100000);
      bdd.setMaxIncrease(250000);
      
@@ -43,18 +49,59 @@ public class Main {
      
      List<BDDPairing> perms = allPerms();
      
+     // Build cube to solve.
      BDD cube = buildInitial();
-     BDD allConfigs = cube.id();
-     addAll(k, perms, allConfigs, cube);
-     BDD start = allConfigs.fullSatOne();
+     int pp[] = {2, 5, 9, 9, 0};
+     System.out.println(pp);
+     BDD start = cube.id();
+     for( int i : pp ){
+    	 start.replaceWith(perms.get(i));
+     }
+     // print cube to solve.
+     printCube(start);
+     
+     
+     
+     // Search (blind shortest path search)
      BDD frontier = start.id();
-     // search :
+     LinkedList<BDD> steps = new LinkedList<>();
+     steps.push(start);
      int i = 0;
      while ( !cube.imp(frontier).isOne() ){
     	 addAll(1, perms, frontier, frontier.id());
     	 System.out.println(i);
     	 i++;
+    	 steps.push(frontier.id());
      }
+     
+     //Extract solution
+     LinkedList<BDD> reverse = new LinkedList<>();
+     reverse.push(cube);
+     //printCube(cube);
+     steps.pop();
+     for( int j = i; j > 0; --j) {
+    	 BDD prev = reverse.peek();
+    	 BDD next = steps.pop();
+    	 //addAll(1, perms, prev, prev.id());
+    	 // this is equivalent, but allows (+/-) to retrieve a permutation that works (p_i).
+    	 int p_i = 0;
+    	 for( BDDPairing p : perms ){
+    		 BDD r = prev.id().replaceWith(p).andWith(next.id());
+    		 if( !r.isZero() ){
+    			 BDD sol = r.satOne();
+    	    	 System.out.println(p_i);
+    	    	 //printCube(sol);
+    	    	 reverse.push(sol);
+    	    	 
+    	    	 break;
+    		 }
+    		 p_i++;
+    		 r.free();
+    	 }
+    	 next.free();
+     }
+     
+     //for( BDD b : reverse) printCube(b);
      
      System.out.println("Number of moves to solve : " + i);
  }
@@ -63,8 +110,7 @@ public class Main {
  
  static void addAll(int depth, List<BDDPairing> perms, BDD allConfigs, BDD c) {
      if (depth <= 0) return;
-     for (BDDPairing i : perms ) {
-         BDDPairing p = (BDDPairing) i;
+     for (BDDPairing p : perms ) {
          BDD c2 = c.replace(p);
          BDD r = c2.imp(allConfigs);
          if (!r.isOne()) {
