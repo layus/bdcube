@@ -51,7 +51,7 @@ public class Main {
      
      // Build cube to solve.
      BDD cube = buildInitial();
-     int pp[] = {2, 5, 9, 9, 0};
+     int pp[] = {2, 5, 9, 9};
      System.out.println(pp);
      BDD start = cube.id();
      for( int i : pp ){
