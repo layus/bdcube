@@ -1,0 +1,89 @@
+\documentclass[10pt,a4paper]{beamer}
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\author{Guillaume Maudoux \& Cédric Libert}
+\title{Symbolic search}
+\begin{document}
+\maketitle
+\begin{frame}
+\tableofcontents
+\end{frame}
+\section{Intro}
+\begin{frame}
+\frametitle{The problem of storing many states}
+
+The list of states still to explore in a classial search can be very space-consuming (exponential in BFS).  One solution is to use DFS, but then memory usage is suboptimal.  We explore another structure able to store many states in a compressed way: the binary decision diagrams.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Binary decision diagrams}
+
+\begin{itemize}
+\item BDDs encode a boolean function (def.)
+\item BDDs seen as reduced decision trees
+\end{itemize}
+
+\end{frame}
+\section{Representing  state sets with BDDs}
+\begin{frame}
+\frametitle{Representing  state sets with BDDs}
+	\begin{itemize}
+	\item BDDs use boolean vectors.  So we need a representation of states as boolean vectors.
+	\item How do we represent a state ? A set of states ? A transition function ?
+	\item Discussion about space efficency.
+	\end{itemize}
+\end{frame}
+
+\section{Computing with BDDs}
+\begin{frame}
+\frametitle{Computing with BDDs}
+
+\begin{itemize}
+\item union
+\item intersection
+\item projection
+\item quantification
+\item time complexity of these operations
+\end{itemize}
+
+\end{frame}
+
+\section{The BFS implemented with set operations}
+\begin{frame}
+\frametitle{The BFS implemented with set operations}
+\end{frame}
+
+\section{Adaptation of classical algorithms}
+\begin{frame}
+\frametitle{Adaptation of classical algorithms}
+
+	\begin{itemize}
+	\item Dijkstra
+	\item A*: the additional difficulty due to usage of heuristics
+	\end{itemize}
+\end{frame}
+
+\section{Fast pattern database with BBDs}
+\begin{frame}
+\frametitle{Fast pattern database with BBDs}
+
+BDDs are an efficient way to implement pattern databases.
+\begin{itemize}
+\item What is a pattern database ?
+\item How to implement it with BDDs ?
+\item Is it really so efficient ?
+\end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+\frametitle{Conclusion}
+
+\end{frame}
+
+\end{document}
