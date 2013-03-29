@@ -3,6 +3,7 @@
 \usepackage{ucs}
 \usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{algorithmic}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
 \usetikzlibrary{positioning, shapes}
@@ -181,6 +182,48 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 \section{The BFS implemented with set operations}
 \begin{frame}
 \frametitle{The BFS implemented with set operations}
+
+We perform a simple tree exploration.
+\begin{description}
+\item[\textsl{init}] is the initial state;
+\item[\textsl{Goal}] is the set of goal states.
+\end{description}
+
+\begin{columns}[b]
+	\begin{column}{.45\textwidth}
+		\begin{algorithmic}
+			\STATE{Open $\leftarrow$ \{init\}}
+			\REPEAT
+			  \STATE{Succ $\leftarrow$ Next(Open)}
+			  \STATE{Open $\leftarrow$ Succ}
+			\UNTIL{Open $\cap$ Goal $\neq \emptyset$}
+			\RETURN{Build(Open $\cap$ Goal)}
+		\end{algorithmic}
+	\end{column}
+	\pause
+	\begin{column}{.65\textwidth}
+	  \begin{algorithmic}
+	  
+		{\color<5-6>{gray}\color<handout>{black}
+			\STATE{Open(x) $\leftarrow \Phi_{\{init\}}(x)$}
+			\pause[3]
+				\REPEAT
+				  {\color{black}
+				  \pause[5]
+					  \STATE{Succ(x') $\leftarrow$ $ \exists x(Open(x) \land Next(x,x'))$}
+					\pause[6]
+					  \STATE{Open($\cdot$) $\leftarrow$ Succ(x)$[x'\leftrightarrow{}x]$}
+					}
+				\pause[3]
+				
+				\UNTIL{Open(x) $\land\ \Phi_{Goal}(x) \neq$ \emph{false(x)}}
+				\pause[4]
+				\RETURN{Build(Open(x) $\land\ \Phi_{Goal}(x)$)}
+		}
+		\end{algorithmic}
+	\end{column}
+\end{columns}
+
 \end{frame}
 
 \section{Adaptation of classical algorithms}
