@@ -36,7 +36,7 @@ The list of states still to explore in a classcial search can be very space-cons
 \item BDDs seen as reduced decision trees
 \end{itemize}
 
-Boolean function example: $(a\vee b)\wedge c \rightarrow a$
+Boolean function example: $a\vee (\neg b \wedge \neg c) \rightarrow a$
 %\tikzstyle{var} = [circle, draw, fill=blue!20,  align=center, minimum size = 1cm,
 %     text badly centered, node distance=2cm, inner sep=2pt]
 %\tikzstyle{line} = [draw, -latex']
@@ -78,8 +78,10 @@ Boolean function example: $(a\vee b)\wedge c \rightarrow a$
 %      	edge from parent node[above] {0}		     
 %     };
 %\end{tikzpicture}
+\tikzstyle{line} = [draw, -latex']
 
-\begin{tikzpicture}
+  \begin{overlayarea}{6cm}{1cm}
+  	\only<1-2>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
@@ -89,20 +91,109 @@ Boolean function example: $(a\vee b)\wedge c \rightarrow a$
            \edge node[auto=right] {1}; [.\node (t1) {1}; ] \edge node[auto=left] {0}; [.\node (t2) {1}; ] 
         ]      
         \edge node[auto=left] {0};[.c 
-          \edge node[auto=right] {1}; [.\node (t3) {1}; ] \edge node[auto=left] {0}; [.\node (t3) {1}; ] 
+          \edge node[auto=right] {1}; [.\node (t3) {1}; ] \edge node[auto=left] {0}; [.\node (t4) {1}; ] 
         ] 
     ]
       \edge node[auto=left] {0}; [.b
         \edge node[auto=right] {1}; [.c 
-          \edge node[auto=right] {1}; [.0 ] \edge node[auto=left] {0}; [.1 ] 
+          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left] {0}; [.1 ] 
         ] 
         \edge node[auto=left] {0}; [.c 
-          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left] {0}; [.1 ] 
+          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left] {0}; [.0 ] 
         ]
     ] ]
     
-        \draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t3.south east)+(0.3,-0.6)$);
-\end{tikzpicture}
+        \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.3)$)  rectangle ($(t4.south east)+(0.3,-0.3)$);}
+\end{tikzpicture}}
+\only<3-4>{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node[red](a) {a}; 
+     \edge node[auto=right] {1};[.\node (b) {1};
+        \edge[white];[.\node[white] (c) {c}; 
+           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+        ]      
+        \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
+          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+        ] 
+    ]
+      \edge node[auto=left] {0}; [.b
+        \edge node[auto=right] {1}; [.c 
+          \edge node[auto=right] {1}; [.\node (t5) {1}; ] \edge node[auto=left] {0}; [.\node (t6) {1}; ] 
+        ] 
+        \edge node[auto=left] {0}; [.c 
+          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left]  {0}; [.0 ] 
+        ]
+    ] ]
+    
+        \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
+        \onslide<4>{\draw[red,thick,dotted] ($(t5.north west)+(-0.3,0.3)$)  rectangle ($(t6.south east)+(0.3,-0.3)$);}
+\end{tikzpicture}}
+\only<5-6>{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node[red](a) {a}; 
+     \edge node[auto=right] {1};[.\node (b) {1};
+        \edge[white];[.\node[white] (c) {c}; 
+           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+        ]      
+        \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
+          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+        ] 
+    ]
+      \edge node[auto=left] {0}; [.\node (b2) {b};
+        \edge node[auto=right] {1}; [.\node (c4) {1};
+          \edge[white] node[auto=right] {1}; [.\node[white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[white] (t6) {1}; ] 
+        ] 
+        \edge node[auto=left] {0}; [.\node (c5) {c}; 
+          \edge node[auto=right] {1}; [.\node (t7) {1}; ] \edge node[auto=left]  {0}; [.\node (t8) {0}; ] 
+        ]
+    ] ]
+    
+        \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
+        \onslide<4>{\draw[red,thick,dotted] ($(t7.north west)+(-0.3,0.6)$)  rectangle ($(t8.south east)+(0.3,-0.6)$);}
+        
+        \onslide<6>{
+        	\foreach \name in {b,c4,t7}
+        	  \draw[red,thick,dotted] ($(\name.north west)+(-0.3,0.3)$)  rectangle ($(\name.south east)+(0.3,-0.3)$);}        
+\end{tikzpicture}}
+\only<7->{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node[red](a) {a}; 
+     \edge[white] node[auto=right] {1};[.\node[white] (b) {1};
+        \edge[white];[.\node[white] (c) {c}; 
+           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+        ]      
+        \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
+          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+        ] 
+    ]
+      \edge node[auto=left] {0}; [.\node (b2) {b};
+        \edge[white] node[auto=right] {1}; [.\node[white] (c4) {1};
+          \edge[white] node[auto=right] {1}; [.\node[white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[white] (t6) {1}; ] 
+        ] 
+        \edge node[auto=left] {0}; [.\node (c5) {c}; 
+          \edge node[auto=right] {1}; [.\node (t7) {1}; ] \edge node[auto=left]  {0}; [.\node (t8) {0}; ] 
+        ]
+    ] ]
+    		\foreach \name in {a,b2}
+    			\draw (\name) -- node[above] {1} (t7);
+        \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
+        \onslide<4>{\draw[red,thick,dotted] ($(t7.north west)+(-0.3,0.6)$)  rectangle ($(t8.south east)+(0.3,-0.6)$);}
+        
+        \onslide<6>{
+        	\foreach \name in {b,c4,t7}
+        	  \draw[red,thick,dotted] ($(\name.north west)+(-0.3,0.3)$)  rectangle ($(\name.south east)+(0.3,-0.3)$);} 
+    
+\end{tikzpicture}}
+
+
+  \end{overlayarea}
+
 
 \end{frame}
 \section{Representing  state sets with BDDs}
