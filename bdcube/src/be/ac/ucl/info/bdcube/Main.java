@@ -32,7 +32,7 @@ public class Main {
 	 //System.loadLibrary("cal");
 	 //System.loadLibrary("cudd");
 	 
-     bdd = BDDFactory.init(1000000, 100000);
+     bdd = BDDFactory.init(10000000, 1000000);
      bdd.setMaxIncrease(250000);
      
      if (args.length > 0) {
