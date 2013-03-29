@@ -159,10 +159,24 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 
 \end{frame}
 \section{Representing  state sets with BDDs}
-\begin{frame}
-\frametitle{Representing  state sets with BDDs}
-	\begin{itemize}
-	\item BDDs use boolean vectors.  So we need a representation of states as boolean vectors.
+\begin{frame}[t]
+\frametitle{States: from boolean vectors to BDDs}
+	 BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
+	
+	\tikzstyle{decision} = [rectangle, draw, fill=gray!20, align=center,
+     text centered, minimum height=1cm,minimum width=1cm, node distance=1cm]	
+	
+	\begin{tikzpicture}
+	\node[decision](d1) {};
+	\foreach \rightof/\name in {d1/d2,d2/d3,d3/d4}{
+		\node[decision,right of=\rightof] (\name) {};}
+	\node[above of=d1] {init};
+	\node[above of=d4] {goal};
+	\foreach \couche/\pos/\name/\state in {2/d1/s1/00,3/d2/s2/01,4/d3/s3/10,5/d4/s4/11}{		
+		\only<\couche>{\draw[red,fill=red] ($(\pos.north west)+(0.5,-0.5)$)  circle (0.1cm);
+		\node[below of=\pos] (\name) {\state};}}
+	\end{tikzpicture}
+	\begin{itemize}	
 	\item How do we represent a state ? A set of states ? A transition function ?
 	\item Discussion about space efficency.
 	\end{itemize}
