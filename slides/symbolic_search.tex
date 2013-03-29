@@ -20,6 +20,10 @@
 \renewcommand{\t}[1]{\text{#1}}
 
 \begin{document}
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{feuille} = [rectangle]
+\tikzstyle{decision} = [rectangle, draw, fill=gray!20, align=center,
+     text centered, minimum height=1cm,minimum width=1cm, node distance=1cm]	
 \maketitle
 \begin{frame}
 \tableofcontents
@@ -40,7 +44,6 @@ BDDs seen as reduced decision trees\\[0.5cm]
  \begin{center}
 $a\vee (\neg b \wedge \neg c) \rightarrow a$
  \end{center}\pause
-\tikzstyle{line} = [draw, -latex']
 
   \begin{overlayarea}{6cm}{1cm}
   	\only<2-3>{\begin{tikzpicture}
@@ -50,21 +53,20 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 \Tree [.\node(a) {a}; 
      \edge node[auto=right] {1};[.\node (b) {b};
         \edge node[auto=right] {1};[.c 
-           \edge node[auto=right] {1}; [.\node (t1) {1}; ] \edge node[auto=left] {0}; [.\node (t2) {1}; ] 
+           \edge node[auto=right] {1}; [.\node[feuille] (t1) {1}; ] \edge node[auto=left] {0}; [.\node[feuille] (t2) {1}; ] 
         ]      
         \edge node[auto=left] {0};[.c 
-          \edge node[auto=right] {1}; [.\node (t3) {1}; ] \edge node[auto=left] {0}; [.\node (t4) {1}; ] 
+          \edge node[auto=right] {1}; [.\node[feuille] (t3) {1}; ] \edge node[auto=left] {0}; [.\node[feuille] (t4) {1}; ] 
         ] 
     ]
       \edge node[auto=left] {0}; [.b
         \edge node[auto=right] {1}; [.c 
-          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left] {0}; [.1 ] 
+          \edge node[auto=right] {1}; [.\node[feuille] {1}; ] \edge node[auto=left] {0}; [.\node[feuille] {1}; ] 
         ] 
         \edge node[auto=left] {0}; [.c 
-          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left] {0}; [.0 ] 
+          \edge node[auto=right] {1}; [.\node[feuille] {1}; ] \edge node[auto=left] {0}; [.\node[feuille]{0}; ] 
         ]
     ] ]
-    
         \onslide<3>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.3)$)  rectangle ($(t4.south east)+(0.3,-0.3)$);}
 \end{tikzpicture}}
 \only<4-5>{\begin{tikzpicture}
@@ -72,23 +74,24 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
 \Tree [.\node (a) {a}; 
-     \edge node[auto=right] {1};[.\node (b) {1};
+     \edge[white] node[auto=right] {1};[.\node[white] (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
-           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+           \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille] (t2) {1}; ] 
         ]      
         \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
-          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+          \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t4) {1}; ] 
         ] 
     ]
       \edge node[auto=left] {0}; [.b
         \edge node[auto=right] {1}; [.c 
-          \edge node[auto=right] {1}; [.\node (t5) {1}; ] \edge node[auto=left] {0}; [.\node (t6) {1}; ] 
+          \edge node[auto=right] {1}; [.\node[feuille] (t5) {1}; ] \edge node[auto=left] {0}; [.\node[feuille] (t6) {1}; ] 
         ] 
         \edge node[auto=left] {0}; [.c 
-          \edge node[auto=right] {1}; [.1 ] \edge node[auto=left]  {0}; [.0 ] 
+          \edge node[auto=right] {1}; [.\node[feuille] {1}; ] \edge node[auto=left]  {0}; [.\node[feuille]{0}; ] 
         ]
     ] ]
-    
+        		\draw (a) -- node[above] {1} (t2);
+
         \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
         \onslide<5>{\draw[red,thick,dotted] ($(t5.north west)+(-0.3,0.3)$)  rectangle ($(t6.south east)+(0.3,-0.3)$);}
 \end{tikzpicture}}
@@ -97,28 +100,28 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
 \Tree [.\node (a) {a}; 
-     \edge node[auto=right] {1};[.\node (b) {1};
+     \edge[white] node[auto=right] {1};[.\node[white] (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
-           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+           \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille] (t2) {1}; ] 
         ]      
         \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
-          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+          \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t4) {1}; ] 
         ] 
     ]
       \edge node[auto=left] {0}; [.\node (b2) {b};
-        \edge node[auto=right] {1}; [.\node (c4) {1};
-          \edge[white] node[auto=right] {1}; [.\node[white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[white] (t6) {1}; ] 
+        \edge node[auto=right] {1}; [.\node[feuille] (c4) {1};
+          \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t6) {1}; ] 
         ] 
         \edge node[auto=left] {0}; [.\node (c5) {c}; 
-          \edge node[auto=right] {1}; [.\node (t7) {1}; ] \edge node[auto=left]  {0}; [.\node (t8) {0}; ] 
+          \edge node[auto=right] {1}; [.\node[feuille] (t7) {1}; ] \edge node[auto=left]  {0}; [.\node[feuille] (t8) {0}; ] 
         ]
     ] ]
-    
+        \draw (a) -- node[above] {1} (t2);
         \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
         \onslide<4>{\draw[red,thick,dotted] ($(t7.north west)+(-0.3,0.6)$)  rectangle ($(t8.south east)+(0.3,-0.6)$);}
         
         \onslide<7>{
-        	\foreach \name in {b,c4,t7}
+        	\foreach \name in {t2,c4,t7}
         	  \draw[red,thick,dotted] ($(\name.north west)+(-0.3,0.3)$)  rectangle ($(\name.south east)+(0.3,-0.3)$);}        
 \end{tikzpicture}}
 \only<8->{\begin{tikzpicture}
@@ -128,18 +131,18 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 \Tree [.\node (a) {a}; 
      \edge[white] node[auto=right] {1};[.\node[white] (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
-           \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
+           \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t2) {1}; ] 
         ]      
         \edge[white] node[auto=left] {0};[.\node[white] (c2) {c}; 
-          \edge[white] node[auto=right] {1}; [.\node[white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t4) {1}; ] 
+          \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t3) {1}; ] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t4) {1}; ] 
         ] 
     ]
       \edge node[auto=left] {0}; [.\node (b2) {b};
         \edge[white] node[auto=right] {1}; [.\node[white] (c4) {1};
-          \edge[white] node[auto=right] {1}; [.\node[white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[white] (t6) {1}; ] 
+          \edge[white] node[auto=right] {1}; [.\node[feuille,white] (t5) {1};] \edge[white] node[auto=left] {0}; [.\node[feuille,white] (t6) {1}; ] 
         ] 
         \edge node[auto=left] {0}; [.\node (c5) {c}; 
-          \edge node[auto=right] {1}; [.\node (t7) {1}; ] \edge node[auto=left]  {0}; [.\node (t8) {0}; ] 
+          \edge node[auto=right] {1}; [.\node[feuille] (t7) {1}; ] \edge node[auto=left]  {0}; [.\node[feuille] (t8) {0}; ] 
         ]
     ] ]
     		\foreach \name in {a,b2}
@@ -159,13 +162,14 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 
 \end{frame}
 \section{Representing  state sets with BDDs}
-\begin{frame}[t]
-\frametitle{States: from boolean vectors to BDDs}
-	 BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
+\begin{frame}
+\frametitle{From a state set to a BDD}
+	% BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
+ 	
 	
-	\tikzstyle{decision} = [rectangle, draw, fill=gray!20, align=center,
-     text centered, minimum height=1cm,minimum width=1cm, node distance=1cm]	
-	
+	 \begin{minipage}[t]{.50\linewidth}
+
+State = (x,y) ($x,y\in \{0,1\}$)\\[0.3cm]	
 	\begin{tikzpicture}
 	\node[decision](d1) {};
 	\foreach \rightof/\name in {d1/d2,d2/d3,d3/d4}{
@@ -175,7 +179,36 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 	\foreach \couche/\pos/\name/\state in {2/d1/s1/00,3/d2/s2/01,4/d3/s3/10,5/d4/s4/11}{		
 		\only<\couche>{\draw[red,fill=red] ($(\pos.north west)+(0.5,-0.5)$)  circle (0.1cm);
 		\node[below of=\pos] (\name) {\state};}}
+		
+	\foreach \couche/\pos/\name/\state in {2/d1/s1/00,3/d2/s2/01,4/d3/s3/10,5/d4/s4/11}{		
+		\only<6->{\node[below of=\pos] (\name) {\state};}}
 	\end{tikzpicture}
+\end{minipage}
+\only<7->{
+ \begin{minipage}[t]{.44\linewidth}
+ \begin{center}
+ 
+Initial state\\[0.3cm]
+
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {x};
+	            \edge[white] node[auto=left] {1}; [.\node[white] {};]      
+        \edge node[auto=left] {0};
+        [.\node (y) {y}; 
+          \edge node[auto=right] {1}; [.\node[feuille] (t3) {0}; ] 
+          \edge node[auto=left] {0}; [.\node[feuille] (t4) {1}; ]    
+     ]]
+     
+    \draw (x) -- node[left] {1} (t3);
+\end{tikzpicture}
+
+ \end{center}
+\end{minipage}}
+
+
 	\begin{itemize}	
 	\item How do we represent a state ? A set of states ? A transition function ?
 	\item Discussion about space efficency.
