@@ -16,6 +16,9 @@
 \title{Symbolic search}
 \setbeamertemplate{navigation symbols}{%
 }
+
+\renewcommand{\t}[1]{\text{#1}}
+
 \begin{document}
 \maketitle
 \begin{frame}
@@ -205,20 +208,22 @@ We perform a simple tree exploration.
 	  \begin{algorithmic}
 	  
 		{\color<5-6>{gray}\color<handout>{black}
-			\STATE{Open(x) $\leftarrow \Phi_{\{init\}}(x)$}
+			\STATE{Open(x) $\leftarrow \Phi_{\{\t{init}\}}(x)$}
 			\pause[3]
 				\REPEAT
 				  {\color{black}
 				  \pause[5]
-					  \STATE{Succ(x') $\leftarrow$ $ \exists x(Open(x) \land Next(x,x'))$}
+					  \STATE{$\t{Succ}(x') \leftarrow 
+					    \exists x(\t{Open}(x) \land \t{Next}(x,x'))$}
 					\pause[6]
-					  \STATE{Open($\cdot$) $\leftarrow$ Succ(x)$[x'\leftrightarrow{}x]$}
+					  \STATE{$\t{Open}(x)$ $\leftarrow \t{Succ}(x')
+					    [x'\leftrightarrow{}x]$}
 					}
 				\pause[3]
 				
-				\UNTIL{Open(x) $\land\ \Phi_{Goal}(x) \neq$ \emph{false(x)}}
+				\UNTIL{$\t{Open}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}(x)$}
 				\pause[4]
-				\RETURN{Build(Open(x) $\land\ \Phi_{Goal}(x)$)}
+				\RETURN{Build(Open$(x) \land\ \Phi_\t{Goal}(x)$)}
 		}
 		\end{algorithmic}
 	\end{column}
@@ -228,12 +233,66 @@ We perform a simple tree exploration.
 
 \section{Adaptation of classical algorithms}
 \begin{frame}
-\frametitle{Adaptation of classical algorithms}
+\frametitle{Symbolic shortest path search (Dijkstra)}
 
-	\begin{itemize}
-	\item Dijkstra
-	\item A*: the additional difficulty due to usage of heuristics
-	\end{itemize}
+We need to introduce Open(f,x) = true iff x is in the open list and has heuristic value f.
+
+  	  \begin{algorithmic}
+
+		%{\color<5-6>{gray}\color<handout>{black}
+			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
+			
+				\LOOP
+				
+        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
+                Open(f',x) \neq \t{false}(x)\} $}
+        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
+                                              \lnot \t{Min}(x)$}
+                                              
+        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
+				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
+				\ENDIF				
+        
+				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
+				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
+				       \exists x,f',w \cdot$ 
+				       $\phantom{} \hspace{2.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
+				       f' = f_\t{min})[x \leftrightarrow x']$}
+				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
+									
+				\ENDLOOP
+		%}
+		\end{algorithmic}
+\end{frame}
+
+\begin{frame}
+  	  \begin{algorithmic}
+
+		%{\color<5-6>{gray}\color<handout>{black}
+			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
+			
+				\LOOP
+				
+        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
+                Open(f',x) \neq \t{false}(x)\} $}
+        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
+                                              \lnot \t{Min}(x)$}
+                                              
+        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
+				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
+				\ENDIF				
+        
+				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
+				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
+				       \exists w,x,h,h',f' \cdot ( \t{Min}(x) \land Trans(w,x,x') \land
+				       \t{Heur}(h,x) \land \t{Heur}(h',x') \land f'=f+w-h+h'
+				       \land f' = f_\t{min})[x \leftrightarrow x']$}
+				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
+									
+				\ENDLOOP
+		%}
+		\end{algorithmic}
+
 \end{frame}
 
 \section{Fast pattern database with BBDs}
