@@ -28,64 +28,22 @@ The list of states still to explore in a classcial search can be very space-cons
 
 \end{frame}
 
-\begin{frame}
-\frametitle{Binary decision diagrams}
+\begin{frame}[t]
+\frametitle{Binary decision diagrams encode boolean functions}
 
-\begin{itemize}
-\item BDDs encode a boolean function (def.)
-\item BDDs seen as reduced decision trees
-\end{itemize}
-
-Boolean function example: $a\vee (\neg b \wedge \neg c) \rightarrow a$
-%\tikzstyle{var} = [circle, draw, fill=blue!20,  align=center, minimum size = 1cm,
-%     text badly centered, node distance=2cm, inner sep=2pt]
-%\tikzstyle{line} = [draw, -latex']
-%
-%\begin{tikzpicture}
-%\node[var] (a1) {a};
-%\node[var,below left of=a1] (b1) {b};
-%\node[var,below right of=a1] (b2) {b};
-%\node[var,below left of=b1] (c1) {c};
-%\node[var,below right of=b1] (c2) {c};
-%\node[var,below left of=b2] (c3) {c};
-%\node[var,below right of=b2] (c4) {c};
-%
-%\path [line] (a1) -- node [above] {1} (b1);	
-%\path [line] (a1) -- node [above] {0} (b2);	
-%
-%\foreach \b/\c/\v in {b1/c1/1, b1/c2/0,b2/c3/1, b2/c4/0}
-%    \path[line] (\b) -- node[above] {\v} (\c);
-%
-%\end{tikzpicture}
-
-%\begin{tikzpicture}[ level 1/.style={sibling distance=3cm},
-%  level 2/.style={sibling distance=1.5cm}]
-%\node [circle,draw] (a){$a$}
-%	child {node [circle,draw] (b1) {$b$}
-%	    child {node [circle,draw] (c1) {$c$}
-%	    		child {node {$1$} edge from parent node[above]{1}}
-%	    		 child {node {$1$} edge from parent node[above]{0}}
-%		}
-%      	child {node [circle,draw] (c2) {$c$}
-%      		      	}		     
-%      	edge from parent node[above] {1}
-%      }
-%     child {node [circle,draw] (b2) {$b$}
-%	    child {node [circle,draw] (c3) {$c$}
-%	    		      	edge from parent node[above] {1}}
-%      	child {node [circle,draw] (c4) {$c$}
-%      				edge from parent node[above] {0}}
-%      	edge from parent node[above] {0}		     
-%     };
-%\end{tikzpicture}
+Boolean function: $F:\{0,1\}^n \rightarrow \{0,1\}$\\[0.5cm]
+BDDs seen as reduced decision trees\\[0.5cm]
+ \begin{center}
+$a\vee (\neg b \wedge \neg c) \rightarrow a$
+ \end{center}\pause
 \tikzstyle{line} = [draw, -latex']
 
   \begin{overlayarea}{6cm}{1cm}
-  	\only<1-2>{\begin{tikzpicture}
+  	\only<2-3>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node[red](a) {a}; 
+\Tree [.\node(a) {a}; 
      \edge node[auto=right] {1};[.\node (b) {b};
         \edge node[auto=right] {1};[.c 
            \edge node[auto=right] {1}; [.\node (t1) {1}; ] \edge node[auto=left] {0}; [.\node (t2) {1}; ] 
@@ -103,13 +61,13 @@ Boolean function example: $a\vee (\neg b \wedge \neg c) \rightarrow a$
         ]
     ] ]
     
-        \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.3)$)  rectangle ($(t4.south east)+(0.3,-0.3)$);}
+        \onslide<3>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.3)$)  rectangle ($(t4.south east)+(0.3,-0.3)$);}
 \end{tikzpicture}}
-\only<3-4>{\begin{tikzpicture}
+\only<4-5>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node[red](a) {a}; 
+\Tree [.\node (a) {a}; 
      \edge node[auto=right] {1};[.\node (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
            \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
@@ -128,13 +86,13 @@ Boolean function example: $a\vee (\neg b \wedge \neg c) \rightarrow a$
     ] ]
     
         \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
-        \onslide<4>{\draw[red,thick,dotted] ($(t5.north west)+(-0.3,0.3)$)  rectangle ($(t6.south east)+(0.3,-0.3)$);}
+        \onslide<5>{\draw[red,thick,dotted] ($(t5.north west)+(-0.3,0.3)$)  rectangle ($(t6.south east)+(0.3,-0.3)$);}
 \end{tikzpicture}}
-\only<5-6>{\begin{tikzpicture}
+\only<6-7>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node[red](a) {a}; 
+\Tree [.\node (a) {a}; 
      \edge node[auto=right] {1};[.\node (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
            \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
@@ -155,15 +113,15 @@ Boolean function example: $a\vee (\neg b \wedge \neg c) \rightarrow a$
         \onslide<2>{\draw[red,thick,dotted] ($(t1.north west)+(-0.3,0.6)$)  rectangle ($(t4.south east)+(0.3,-0.6)$);}
         \onslide<4>{\draw[red,thick,dotted] ($(t7.north west)+(-0.3,0.6)$)  rectangle ($(t8.south east)+(0.3,-0.6)$);}
         
-        \onslide<6>{
+        \onslide<7>{
         	\foreach \name in {b,c4,t7}
         	  \draw[red,thick,dotted] ($(\name.north west)+(-0.3,0.3)$)  rectangle ($(\name.south east)+(0.3,-0.3)$);}        
 \end{tikzpicture}}
-\only<7->{\begin{tikzpicture}
+\only<8->{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node[red](a) {a}; 
+\Tree [.\node (a) {a}; 
      \edge[white] node[auto=right] {1};[.\node[white] (b) {1};
         \edge[white];[.\node[white] (c) {c}; 
            \edge[white] node[auto=right] {1}; [.\node[white] (t1) {1}; ] \edge[white] node[auto=left] {0}; [.\node[white] (t2) {1}; ] 
