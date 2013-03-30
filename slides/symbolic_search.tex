@@ -32,7 +32,7 @@
 \begin{frame}
 \frametitle{The problem of storing many states}
 
-The list of states still to explore in a classcial search can be very space-consuming (exponential in BFS).  One solution is to use DFS, but then memory usage is suboptimal.  We explore another structure able to store many states in a compressed way: the binary decision diagrams.
+The list of states still to explore in a classical search can be very space-consuming (exponential in BFS).  One solution is to use DFS, but then memory usage is suboptimal.  We explore another structure able to store many states in a compressed way: the binary decision diagrams.
 
 \end{frame}
 
@@ -162,14 +162,11 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 
 \end{frame}
 \section{Representing  state sets with BDDs}
-\begin{frame}
+\begin{frame}[t]
 \frametitle{From a state set to a BDD}
 	% BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
- 	
-	
-	 \begin{minipage}[t]{.50\linewidth}
-
-State = (x,y) ($x,y\in \{0,1\}$)\\[0.3cm]	
+	 \begin{minipage}[t]{.40\linewidth}
+State = ($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]	
 	\begin{tikzpicture}
 	\node[decision](d1) {};
 	\foreach \rightof/\name in {d1/d2,d2/d3,d3/d4}{
@@ -182,37 +179,137 @@ State = (x,y) ($x,y\in \{0,1\}$)\\[0.3cm]
 		
 	\foreach \couche/\pos/\name/\state in {2/d1/s1/00,3/d2/s2/01,4/d3/s3/10,5/d4/s4/11}{		
 		\only<6->{\node[below of=\pos] (\name) {\state};}}
+		
+			\only<8-10>{\draw[red,fill=red] ($(d2.north west)+(0.5,-0.5)$)  circle (0.1cm);}
+
 	\end{tikzpicture}
+	\begin{itemize}
+\item states: S(w)
+\item initial state: $\phi_{\{s\}}(x)$
+\item goal set: $\phi_T(x)$
+\item a search frontier: open(x)
+\item the transition relation: trans(x,x')
+\end{itemize}
 \end{minipage}
-\only<7->{
- \begin{minipage}[t]{.44\linewidth}
+\only<11->{
+ \begin{minipage}[t]{.54\linewidth}
  \begin{center}
- 
-Initial state\\[0.3cm]
+Transition relation
+%Set of initial states\\[0.3cm]
+%
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {$x_1$};
+         \edge node[auto=right] {1};
+           [.\node (y) {$x_2$};
+             \edge node[auto=right] {0};
+               [.\node (y'1) {$x_2'$};
+                  \edge node[auto=right] {1};
+                  	\node[feuille] {1};
+                  \edge node[auto=left] {0};
+                  	\node[feuille] {0};               
+               ]
+             \edge node[auto=left] {1};
+               [.\node (x') {$x_1'$};
+                \edge node[auto=right] {0}; 
+                  \node[feuille] {0};
+                \edge node[auto=left] {1};
+                 [.\node (y') {$x_2$'};
+                   \edge node[auto=right] {0};
+                   	\node[feuille] {1};
+                   \edge node[auto=left] {1};
+                   	\node[feuille] {0};
+                 ]
+               ]
+           ]
+         \edge node[auto=left] {0};
+           [.\node (y2) {$x_2$};
+             \edge node[auto=left] {0};
+               [.\node (x'2) {$x_1$'};
+               	\edge node[auto=right] {1}; 
+                  \node[feuille] {0};
+                \edge node[auto=left] {0};
+                 [.\node (y'2) {$x_2$'};
+                   \edge node[auto=right] {0};
+                   	\node[feuille] {0};
+                   \edge node[auto=left] {1};
+                   	\node[feuille] {1};
+                 ]
+               ]
+           ]
+	  ]
+	\draw (y2) -- node[left] {1} (y');
+	\only<10-> {
+		\foreach \name in {x,y,y'1}
+			\draw[red,thick] (\name) circle (0.5cm);
+			 
+	}
+	
+\end{tikzpicture}
+
+ \end{center}
+\end{minipage}}%\\[-2cm]
+\only<7>{ \begin{minipage}[t]{.54\linewidth}
+
+\begin{center}
+Initial state set
 
 \begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node (x) {x};
+\Tree [.\node (x) {$x_1$};
 	            \edge[white] node[auto=left] {1}; [.\node[white] {};]      
         \edge node[auto=left] {0};
-        [.\node (y) {y}; 
+        [.\node (y) {$x_2$}; 
           \edge node[auto=right] {1}; [.\node[feuille] (t3) {0}; ] 
           \edge node[auto=left] {0}; [.\node[feuille] (t4) {1}; ]    
      ]]
      
     \draw (x) -- node[left] {1} (t3);
 \end{tikzpicture}
-
- \end{center}
+\end{center}
 \end{minipage}}
+\only<8-10>{\begin{minipage}[t]{.54\linewidth}
+\begin{center}
+Search frontier of state (1,0)
 
-
-	\begin{itemize}	
-	\item How do we represent a state ? A set of states ? A transition function ?
-	\item Discussion about space efficency.
-	\end{itemize}
+\only<8-9>{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {$x_1$};
+	            \edge node[auto=right] {1}; 
+	            [.\node (y1) {$x_2$};
+					\edge node[auto=right] {1}; \node[feuille] {0};
+					\edge node[auto=left] {0};  \node[feuille] {1};          
+	            ]      
+        	        \edge node[auto=left] {0};
+                [.\node (y2) {$x_2$};
+					\edge node[auto=right] {1}; \node[feuille] {0};
+					\edge node[auto=left] (t4) {0};  \node[feuille] {1};          
+	            ]
+    ]
+     \only<9>{\draw[red,thick,dotted] ($(y1.north west)+(-0.5,0.3)$)  rectangle ($(t4.south east)+(0,-1)$);}
+\end{tikzpicture}}
+\only<10>{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree   [.\node (y1) {$x_2$};
+					\edge node[auto=right] {1}; \node[feuille] {0};
+   					\edge node[auto=left] {0};  \node[feuille] {1};          
+        ]      
+ 
+\end{tikzpicture}}
+\end{center}
+\end{minipage}}
+%	\begin{itemize}	
+%	\item How do we represent a state ? A set of states ? A transition function ?
+%	\item Discussion about space efficiency.
+%	\end{itemize}
 \end{frame}
 
 \section{Computing with BDDs}
