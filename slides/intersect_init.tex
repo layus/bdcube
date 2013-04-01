@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+[
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {x};
+	            \edge node[auto=right] {1}; \node (y) {$ap(\wedge,z,y)$};
+	            	\edge node[auto=left] {0}; \node {$ap(\wedge,1,0)$};      
+        ]
+     
+\end{tikzpicture}

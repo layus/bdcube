@@ -10,6 +10,7 @@
 \usetikzlibrary{trees,calc}
 \usepackage{fancybox}
 \usepackage{tikz-qtree}
+
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \author{Guillaume Maudoux \& Cédric Libert}
@@ -18,6 +19,22 @@
 }
 
 \renewcommand{\t}[1]{\text{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% The following definitions are to extend the LaTeX algorithmic 
+%% package with SWITCH statements and one-line structures.
+%% The extension is by 
+%%   Prof. Farn Wang 
+%%   Dept. of Electrical Engineering, 
+%%   National Taiwan University. 
+%% 
+\newcommand{\CASEOF}[1]{\STATE \textbf{case} (#1)}
+\newcommand{\ENDCASEOF}{\STATE \textbf{end case}}
+\newcommand{\CASE}[1]{\STATE \textbf{of} #1\textbf{:} \begin{ALC@g}}
+\newcommand{\ENDCASE}{\end{ALC@g}}
+%% 
+%% End of the LaTeX algorithmic package extension.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \tikzstyle{line} = [draw, -latex']
@@ -315,14 +332,84 @@ Search frontier of state (1,0)
 
 \section{Computing with BDDs}
 \begin{frame}
-\frametitle{Computing with BDDs}
+\frametitle{Union and intersection of BDDs in $O(|G_f||G_g|)$}
+\begin{minipage}[t]{.36\linewidth}
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {x};
+	            \edge node[auto=right] {1}; 
+	            	[.\node (z) {z};
+					\edge node[auto=right] {1};
+					\node[feuille] (f1) {0};
+					\edge node[auto=right] {0};
+					\node[feuille] (f2) {1};	 	            	
+	            	]      
+        ]
+     
+    \draw (x) edge[bend left] node[right] {0} (f2);
+\end{tikzpicture}
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {x};
+	            \edge node[auto=right] {1}; 
+	            	[.\node (y) {y};
+					\edge node[auto=right] {1};
+					\node[feuille] (f1) {1};
+					\edge node[auto=right] {0};
+					\node[feuille] (f2) {0};	 	            	
+	            	]      
+        ]
+     
+    \draw (x) edge[bend left] node[right] {0} (f2);
+\end{tikzpicture}\\[0.1cm]
+\only<3-4>{\include{intersect_init}}
+\only<5-6>{\include{intersect_02}}
+\only<7-8>{\include{intersect_03}}
+\only<9-10>{\include{intersect_04}}
+\only<11->{\include{intersect_final}}
 
-\begin{itemize}
-\item union, intersection: $O(|G_f||G_g|)$
-\item projection:
-\item quantification:
-\item time complexity of these operations
-\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[c]{.55\linewidth}
+\begin{small}
+apply($\wedge,bdd1,bdd2$)
+	\begin{algorithmic}
+\CASEOF{bdd1,bdd2}
+	\pause
+	\CASE{(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.$c$ $e_1$ $e_1'$ ]\end{tikzpicture},\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.$c$ $e_2$ $e_2'$ ]\end{tikzpicture})}
+	\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(e_1,e_2)$ $apply(e_1',e_2')$ ])\end{tikzpicture})
+	\ENDCASE
+	\pause\pause
+	\CASE{(bdd1,\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $e_2$ $e_2'$ ]\end{tikzpicture}) where $bdd1 < c$}
+		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(op,bdd1,e_2)$ $apply(op,bdd1,e_2')$ ]\end{tikzpicture})
+	\ENDCASE
+	\pause\pause
+	\CASE{(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $e_1$ $e_1'$ ]\end{tikzpicture},bdd2) where $bdd2 < c$}
+		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(op,e_1,bdd2)$ $apply(op,e_1',bdd2)$ ]\end{tikzpicture})
+	\ENDCASE
+	\pause\pause
+	\CASE{(0$|$1,0$|$1)}
+		\STATE reduce(bdd1 $\wedge$ bdd2)
+	\ENDCASE
+	\pause\pause
+\ENDCASEOF
+	\end{algorithmic}
+%	\begin{tikzpicture}
+\end{small}
+
+%	\end{tikzpicture}
+\end{minipage}
+
+%Complexity: $O(|bdd1||bdd2|)$
+%\begin{itemize}
+%\item union, intersection: $O(|G_f||G_g|)$
+%\item projection:
+%\item quantification:
+%\item time complexity of these operations
+%\end{itemize}
 
 \end{frame}
 
