@@ -165,8 +165,8 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 \begin{frame}[t]
 \frametitle{From a state set to a BDD}
 	% BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
-	 \begin{minipage}[t]{.40\linewidth}
-State = ($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]	
+	 \begin{minipage}[t]{.42\linewidth}
+State x = \\($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]	
 	\begin{tikzpicture}
 	\node[decision](d1) {};
 	\foreach \rightof/\name in {d1/d2,d2/d3,d3/d4}{
@@ -184,11 +184,12 @@ State = ($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]
 
 	\end{tikzpicture}
 	\begin{itemize}
-\item states: S(w)
+\item allowed states: S(x)
+\item successor set: Succ(x)
 \item initial state: $\phi_{\{s\}}(x)$
 \item goal set: $\phi_T(x)$
-\item a search frontier: open(x)
-\item the transition relation: trans(x,x')
+\item a search frontier: Open(x)
+\item the transition relation: Trans(x,x')
 \end{itemize}
 \end{minipage}
 \only<11->{
@@ -317,10 +318,9 @@ Search frontier of state (1,0)
 \frametitle{Computing with BDDs}
 
 \begin{itemize}
-\item union
-\item intersection
-\item projection
-\item quantification
+\item union, intersection: $O(|G_f||G_g|)$
+\item projection:
+\item quantification:
 \item time complexity of these operations
 \end{itemize}
 
