@@ -413,6 +413,15 @@ apply($\wedge,bdd1,bdd2$)
 
 \end{frame}
 
+\begin{frame}[c]
+\frametitle{Quantification over a BDD in $O(|G_f|^2)$}
+
+Existential quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\vee BDD_{f[x_i=1]}$
+
+Universal quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\wedge BDD_{f[x_i=1]}$
+
+\end{frame}
+
 \section{The BFS implemented with set operations}
 \begin{frame}
 \frametitle{The BFS implemented with set operations}
