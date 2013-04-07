@@ -260,7 +260,7 @@ Transition relation
 	  ]
 	\draw (y2) -- node[left] {1} (y');
 	\only<10-> {
-		\foreach \name in {x,y,y'1}
+		\foreach \name in {x,y2,y'}
 			\draw[red,thick] (\name) circle (0.5cm);
 			 
 	}
@@ -292,7 +292,7 @@ Initial state set
 \end{minipage}}
 \only<8-10>{\begin{minipage}[t]{.54\linewidth}
 \begin{center}
-Search frontier of state (1,0)
+Search frontier of state (0,1)
 
 \only<8-9>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
