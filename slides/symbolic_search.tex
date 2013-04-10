@@ -209,7 +209,7 @@ State x = \\($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]
 \item the transition relation: Trans(x,x')
 \end{itemize}
 \end{minipage}
-\only<11->{
+\only<12->{
  \begin{minipage}[t]{.54\linewidth}
  \begin{center}
 Transition relation
@@ -290,7 +290,7 @@ Initial state set
 \end{tikzpicture}
 \end{center}
 \end{minipage}}
-\only<8-10>{\begin{minipage}[t]{.54\linewidth}
+\only<8-11>{\begin{minipage}[t]{.54\linewidth}
 \begin{center}
 Search frontier of state (0,1)
 
@@ -312,7 +312,22 @@ Search frontier of state (0,1)
     ]
      \only<9>{\draw[red,thick,dotted] ($(y1.north west)+(-0.5,0.3)$)  rectangle ($(t4.south east)+(0,-1)$);}
 \end{tikzpicture}}
+
+
+
 \only<10>{\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree   [ .\node(x1) {$x_1$}; 
+			[.\node (y1) {$x_2$};
+					\edge node[auto=right] {1}; \node[feuille] {0};
+   					\edge node[auto=left] {0};  \node[feuille] {1};          
+        		] 
+        	]      
+\end{tikzpicture}}
+
+\only<11>{\begin{tikzpicture}
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
@@ -331,8 +346,36 @@ Search frontier of state (0,1)
 \end{frame}
 
 \section{Computing with BDDs}
+
 \begin{frame}
-\frametitle{Union and intersection of BDDs in $O(|G_f||G_g|)$}
+\frametitle{Negation of a BDD: inverting the leaves in O(1)}
+\begin{center}
+
+\only<1-2>{
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {$x_1$};
+	            \edge[white] node[auto=left] {1}; [.\node[white] {};]      
+        \edge node[auto=left] {0};
+        [.\node (y) {$x_2$}; 
+          \edge node[auto=right] {1}; [. \node[feuille] (t3) {\only<1>{0}\only<2>{1}}; ] 
+          \edge node[auto=left] {0}; [.\node[feuille] (t4) {\only<1>{1}\only<2>{0}}; ]    
+     ]]
+     
+    \draw (x) -- node[left] {1} (t3);
+\end{tikzpicture}
+}
+
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Intersection of BDDs in $O(|G_f||G_g|)$}
 \begin{minipage}[t]{.36\linewidth}
 \begin{tikzpicture}
 [every tree node/.style={draw,circle},
@@ -422,6 +465,17 @@ Universal quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\wedge BDD_{f[x_i=1]}$
 
 \end{frame}
 
+\begin{frame}
+\frametitle{Computing the successors of a state set in $O((|G_f||G_g|)^2)$}
+Given:
+\begin{itemize}
+\item a state set $\phi_S(x)$
+\item a transition relation $Trans(x,x')$
+\end{itemize}%\\[2cm]
+\vspace{2cm}
+Then: $Succ_S(x')=\exists(\phi_S(x) \wedge Trans(x,x'))$
+\end{frame}
+
 \section{The BFS implemented with set operations}
 \begin{frame}
 \frametitle{The BFS implemented with set operations}
@@ -472,66 +526,93 @@ We perform a simple tree exploration.
 \end{frame}
 
 \section{Adaptation of classical algorithms}
+%\begin{frame}
+%\frametitle{Symbolic shortest path search (Dijkstra)}
+%
+%We need to introduce Open(f,x) = true iff x is in the open list and has heuristic value f.
+%
+%  	  \begin{algorithmic}
+%
+%		%{\color<5-6>{gray}\color<handout>{black}
+%			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
+%			
+%				\LOOP
+%				
+%        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
+%                Open(f',x) \neq \t{false}(x)\} $}
+%        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
+%                                              \lnot \t{Min}(x)$}
+%                                              
+%        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
+%				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
+%				\ENDIF				
+%        
+%				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
+%				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
+%				       \exists x,f',w \cdot$ 
+%				       $\phantom{} \hspace{2.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
+%				       f' = f_\t{min})[x \leftrightarrow x']$}
+%				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
+%									
+%				\ENDLOOP
+%		%}
+%		\end{algorithmic}
+%\end{frame}
+%
+%\begin{frame}
+%  	  \begin{algorithmic}
+%
+%		%{\color<5-6>{gray}\color<handout>{black}
+%			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
+%			
+%				\LOOP
+%				
+%        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
+%                Open(f',x) \neq \t{false}(x)\} $}
+%        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
+%                                              \lnot \t{Min}(x)$}
+%                                              
+%        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
+%				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
+%				\ENDIF				
+%        
+%				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
+%				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
+%				       \exists w,x,h,h',f' \cdot ( \t{Min}(x) \land Trans(w,x,x') \land
+%				       \t{Heur}(h,x) \land \t{Heur}(h',x') \land f'=f+w-h+h'
+%				       \land f' = f_\t{min})[x \leftrightarrow x']$}
+%				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
+%									
+%				\ENDLOOP
+%		%}
+%		\end{algorithmic}
+%
+%\end{frame}
+
 \begin{frame}
-\frametitle{Symbolic shortest path search (Dijkstra)}
+\frametitle{From Dijkstra to A*}
 
-We need to introduce Open(f,x) = true iff x is in the open list and has heuristic value f.
+Both use:
+\begin{itemize}
+\item a weighted transition relation: $Trans(w,x,x')$
+\item a search frontier with heuristic values: $Open(f,x)$ 
+\end{itemize}
 
-  	  \begin{algorithmic}
+Difference between them: the successor computation.\\[1cm]
 
-		%{\color<5-6>{gray}\color<handout>{black}
-			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
-			
-				\LOOP
-				
-        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
-                Open(f',x) \neq \t{false}(x)\} $}
-        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
-                                              \lnot \t{Min}(x)$}
-                                              
-        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
-				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
-				\ENDIF				
-        
-				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
-				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
-				       \exists x,f',w \cdot$ 
-				       $\phantom{} \hspace{2.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
-				       f' = f_\t{min})[x \leftrightarrow x']$}
-				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
-									
-				\ENDLOOP
-		%}
-		\end{algorithmic}
-\end{frame}
-
-\begin{frame}
-  	  \begin{algorithmic}
-
-		%{\color<5-6>{gray}\color<handout>{black}
-			\STATE{$\t{Open}(f,x) \leftarrow (f=0) \land \Phi_{\{\t{init}\}}(x)$}
-			
-				\LOOP
-				
-        \STATE{$f_\t{min} \leftarrow \min \{ f | \exists f' \cdot f = f' \land
-                Open(f',x) \neq \t{false}(x)\} $}
-        \STATE{$\t{Min}(x) \leftarrow \exists f(\t{Open}(f,x) \land 
-                                              \lnot \t{Min}(x)$}
-                                              
-        \IF{$\t{Min}(x) \land\ \Phi_\t{Goal}(x) \neq \t{false}$}
-				  \RETURN{$\t{Build}(\t{Min}(x) \land \Phi_\t{Goal}(x))$}
-				\ENDIF				
-        
-				\STATE{$\t{Rest}(x) \leftarrow \t{Open}(f,x) \land \lnot\t{Min}(x)$}
-				\STATE{$\t{Succ}(f,x)$ $\leftarrow 
-				       \exists w,x,h,h',f' \cdot ( \t{Min}(x) \land Trans(w,x,x') \land
-				       \t{Heur}(h,x) \land \t{Heur}(h',x') \land f'=f+w-h+h'
-				       \land f' = f_\t{min})[x \leftrightarrow x']$}
-				\STATE{$\t{Open}(x) \leftarrow \t{Rest}(f,x) \lor \t{Succ}(f,x) $}
-									
-				\ENDLOOP
-		%}
-		\end{algorithmic}
+Dijkstra\\[0.2cm]
+$\t{Succ}(f,x)$ $\leftarrow 
+			       \exists x,f',w \cdot$ 
+				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
+				       f'=f+w \land
+				       f' = f_\t{min})[x \leftrightarrow x']$\\[1cm]
+A*\\[0.2cm]
+$\t{Succ}(f,x)$ $\leftarrow 
+				       \exists x,f',w,h,h' \cdot$\\
+				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x')$
+				       $\phantom{} \hspace{1.2cm}
+				       \land \t{Heur}(h,x) \land \t{Heur}(h',x') \land f=f'+w-h+h'
+				       \land f' = f_\t{min})[x \leftrightarrow x']$
 
 \end{frame}
 
