@@ -461,6 +461,36 @@ apply($\wedge,bdd1,bdd2$)
 
 Existential quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\vee BDD_{f[x_i=1]}$
 
+\pause
+\begin{minipage}[l]{.35\linewidth}
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree [.\node (x) {x}; \edge[white];
+		[.\node[white](y1) {}; \edge[white]; [.\node(z) {z}; 0 1 ] ]
+		[.\node(y) {$y$}; 1 ]	  
+	  ]
+     
+    \draw (y) -- (z);
+    \draw (x) -- (z);
+\end{tikzpicture}
+\end{minipage}\pause
+\begin{minipage}[c]{.1\linewidth}
+$\exists x :$
+\end{minipage}\pause
+\begin{minipage}[r]{.35\linewidth}
+\begin{tikzpicture}
+[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\Tree 
+		[.\node(y) {y};  [.\node(z) {z}; 0 1 ]  1 ]
+     
+\end{tikzpicture}
+\end{minipage}\pause
+\vspace{0.5cm}
+
 Universal quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\wedge BDD_{f[x_i=1]}$
 
 \end{frame}
@@ -590,7 +620,7 @@ We perform a simple tree exploration.
 %\end{frame}
 
 \begin{frame}
-\frametitle{From Dijkstra to A*}
+\frametitle{Dijkstra and A*}
 
 Both use:
 \begin{itemize}
@@ -604,14 +634,14 @@ Dijkstra\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
 			       \exists x,f',w \cdot$ 
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
-				       f'=f+w \land
+				       f_\t{min}=f+w \land
 				       f' = f_\t{min})[x \leftrightarrow x']$\\[1cm]
 A*\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
 				       \exists x,f',w,h,h' \cdot$\\
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x')$
 				       $\phantom{} \hspace{1.2cm}
-				       \land \t{Heur}(h,x) \land \t{Heur}(h',x') \land f=f'+w-h+h'
+				       \land \t{Heur}(h,x) \land \t{Heur}(h',x') \land f=f_\t{min}+w-h+h'
 				       \land f' = f_\t{min})[x \leftrightarrow x']$
 
 \end{frame}
@@ -630,7 +660,7 @@ BDDs are an efficient way to implement pattern databases.
 
 \section{Conclusion}
 \begin{frame}
-\frametitle{Conclusion: avantage des BDD pour la recherche symbolique}
+\frametitle{Conclusion: pro's of BDDs for symbolic search}
 \begin{itemize}
 \item Sharing parts of the state vectors
 \item Unique representation
