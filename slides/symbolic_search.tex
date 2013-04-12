@@ -503,7 +503,7 @@ Given:
 \item a transition relation $Trans(x,x')$
 \end{itemize}%\\[2cm]
 \vspace{2cm}
-Then: $Succ_S(x')=\exists(\phi_S(x) \wedge Trans(x,x'))$
+Then: $Succ_S(x')=\exists x(\phi_S(x) \wedge Trans(x,x'))=\exists x_1 \ldots \exists x_n (\phi_S(x) \wedge Trans(x,x'))$\\$(\text{where }x=\{x_1,\ldots, x_n\},x'=\{x'_1,\ldots,x'_n\})$
 \end{frame}
 
 \section{The BFS implemented with set operations}
@@ -663,6 +663,7 @@ BDDs are an efficient way to implement pattern databases.
 \frametitle{Conclusion: pro's of BDDs for symbolic search}
 \begin{itemize}
 \item Sharing parts of the state vectors
+\item Polynomial size, exponential number of paths
 \item Unique representation
 \item Functionnal exploration: no need to uncompress the state sets
 \end{itemize}
