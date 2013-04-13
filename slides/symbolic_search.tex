@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{beamer}
+\documentclass[10pt,a4paper,pdf]{beamer}
 \usepackage[utf8x]{inputenc}
 \usepackage{ucs}
 \usepackage[english]{babel}
@@ -15,8 +15,7 @@
 \usepackage{amssymb}
 \author{Guillaume Maudoux \& Cédric Libert}
 \title{Symbolic search}
-\setbeamertemplate{navigation symbols}{%
-}
+\setbeamertemplate{navigation symbols}{}
 
 \renewcommand{\t}[1]{\text{#1}}
 
@@ -57,10 +56,11 @@ The list of states still to explore in a classical search can be very space-cons
 \frametitle{Binary decision diagrams encode boolean functions}
 
 Boolean function: $F:\{0,1\}^n \rightarrow \{0,1\}$\\[0.5cm]
-BDDs seen as reduced decision trees\\[0.5cm]
+(RO)BDDs seen as reduced decision trees\\[0.5cm]
  \begin{center}
-$a\vee (\neg b \wedge \neg c) \rightarrow a$
- \end{center}\pause
+$f( x = \langle a,b,c \rangle) \ =\  a \lor (\lnot b \land \lnot c) \rightarrow a \quad (\equiv a \lor b \lor c)$
+ \end{center}
+ \pause
 
   \begin{overlayarea}{6cm}{1cm}
   	\only<2-3>{\begin{tikzpicture}
@@ -182,8 +182,9 @@ $a\vee (\neg b \wedge \neg c) \rightarrow a$
 \begin{frame}[t]
 \frametitle{From a state set to a BDD}
 	% BDDs use boolean vectors $\rightarrow$  states should be boolean vectors\\[0.5cm]\pause
-	 \begin{minipage}[t]{.42\linewidth}
-State x = \\($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]	
+\begin{minipage}[t]{.42\linewidth}
+State x = $\langle x_1,x_2 \rangle$,\\
+ with $x_1,x_2\in \{0,1\}$\\[0.3cm]	
 	\begin{tikzpicture}
 	\node[decision](d1) {};
 	\foreach \rightof/\name in {d1/d2,d2/d3,d3/d4}{
@@ -208,8 +209,8 @@ State x = \\($x_1,x_2$) ($x_1,x_2\in \{0,1\}$)\\[0.3cm]
 \item a search frontier: Open(x)
 \item the transition relation: Trans(x,x')
 \end{itemize}
-\end{minipage}
-\only<12->{
+\end{minipage}%
+\only<12->{%
  \begin{minipage}[t]{.54\linewidth}
  \begin{center}
 Transition relation
@@ -346,6 +347,46 @@ Search frontier of state (0,1)
 \end{frame}
 
 \section{Computing with BDDs}
+
+\begin{frame}
+\frametitle{Variable ordering}
+
+The size $|G|$ of a BDD is the number of nodes in $G$.\\
+It is heavily dependent on the order of the variables.
+
+For $f(x_1, \ldots, x_8) = (x_1 \land x_2) \lor \ldots \lor (x_7 \land x_8)$, we can have...
+
+\includegraphics[height=6cm]{images/good.png}
+\includegraphics[height=6cm]{images/bad.png}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Considerations about the size of BDD's}
+
+The state space is exponential in $n$.
+
+$x = \langle x_1, \ldots, x_n \rangle \in \{0,1\}^n$
+
+$|\{0,1\}^n| = 2^n$
+
+\begin{itemize}
+\item Some BDD have no good ordering (all are exponential).
+\item We expect $|G|$ to be in $\t{POLY}(n)$, with $n$ the number of variables.\\
+This can be proven in some cases.
+\pause
+\item But finding the optimal variable ordering is NP-Complete (of course...)
+\end{itemize}
+\pause
+\begin{center}
+\includegraphics[height=3cm]{images/exponential.pdf}
+\end{center}
+
+\begin{center}
+
+\end{center}
+
+\end{frame}
 
 \begin{frame}
 \frametitle{Negation of a BDD: inverting the leaves in O(1)}
@@ -501,9 +542,12 @@ Given:
 \begin{itemize}
 \item a state set $\phi_S(x)$
 \item a transition relation $Trans(x,x')$
-\end{itemize}%\\[2cm]
-\vspace{2cm}
-Then: $Succ_S(x')=\exists x(\phi_S(x) \wedge Trans(x,x'))=\exists x_1 \ldots \exists x_n (\phi_S(x) \wedge Trans(x,x'))$\\$(\text{where }x=\{x_1,\ldots, x_n\},x'=\{x'_1,\ldots,x'_n\})$
+\end{itemize}
+\vspace*{2\baselineskip}
+
+Then:
+\[ Succ_S(x) = \exists x(\phi_S(x) \land Trans(x,x')) [ x \leftrightarrow x' ] \]
+
 \end{frame}
 
 \section{The BFS implemented with set operations}
@@ -515,6 +559,9 @@ We perform a simple tree exploration.
 \item[\textsl{init}] is the initial state;
 \item[\textsl{Goal}] is the set of goal states.
 \end{description}
+
+Le $f^*$ be the depth of the shallowest solution.
+The algorithm runs $O(f*)$ iterations. 
 
 \begin{columns}[b]
 	\begin{column}{.45\textwidth}
@@ -624,19 +671,21 @@ We perform a simple tree exploration.
 
 Both use:
 \begin{itemize}
-\item a weighted transition relation: $Trans(w,x,x')$
-\item a search frontier with heuristic values: $Open(f,x)$ 
+\item a weighted transition relation: $\t{Trans}(w,x,x')$
+\item a search frontier with heuristic values: $\t{Open}(f,x)$
+\item a set of open nodes with minimal heuristic value: $\t{Min}(x)$ 
 \end{itemize}
 
 Difference between them: the successor computation.\\[1cm]
 
-Dijkstra\\[0.2cm]
+Shortest Path (Dijkstra) -- $O(f^*)$\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
 			       \exists x,f',w \cdot$ 
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
 				       f_\t{min}=f+w \land
-				       f' = f_\t{min})[x \leftrightarrow x']$\\[1cm]
-A*\\[0.2cm]
+				       f' = f_\t{min})[x \leftrightarrow x']$				       
+				       \\[1cm]
+A* -- $O((f^*)^2)$\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
 				       \exists x,f',w,h,h' \cdot$\\
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x')$
