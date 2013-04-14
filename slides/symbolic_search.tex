@@ -41,16 +41,16 @@
 \tikzstyle{decision} = [rectangle, draw, fill=gray!20, align=center,
      text centered, minimum height=1cm,minimum width=1cm, node distance=1cm]	
 \maketitle
-\begin{frame}
-\tableofcontents
-\end{frame}
-\section{Intro}
-\begin{frame}
-\frametitle{The problem of storing many states}
-
-The list of states still to explore in a classical search can be very space-consuming (exponential in BFS).  One solution is to use DFS, but then memory usage is suboptimal.  We explore another structure able to store many states in a compressed way: the binary decision diagrams.
-
-\end{frame}
+%\begin{frame}
+%\tableofcontents
+%\end{frame}
+%\section{Intro}
+%\begin{frame}
+%\frametitle{The problem of storing many states}
+%
+%The list of states still to explore in a classical search can be very space-consuming (exponential in BFS).  One solution is to use DFS, but then memory usage is suboptimal.  We explore another structure able to store many states in a compressed way: the binary decision diagrams.
+%
+%\end{frame}
 
 \begin{frame}[t]
 \frametitle{Binary decision diagrams encode boolean functions}
@@ -58,7 +58,7 @@ The list of states still to explore in a classical search can be very space-cons
 Boolean function: $F:\{0,1\}^n \rightarrow \{0,1\}$\\[0.5cm]
 (RO)BDDs seen as reduced decision trees\\[0.5cm]
  \begin{center}
-$f( x = \langle a,b,c \rangle) \ =\  a \lor (\lnot b \land \lnot c) \rightarrow a \quad (\equiv a \lor b \lor c)$
+$f( x = \langle a,b,c \rangle) \ =\  a \lor b \lor c$
  \end{center}
  \pause
 
@@ -201,14 +201,25 @@ State x = $\langle x_1,x_2 \rangle$,\\
 			\only<8-10>{\draw[red,fill=red] ($(d2.north west)+(0.5,-0.5)$)  circle (0.1cm);}
 
 	\end{tikzpicture}
-	\begin{itemize}
-\item allowed states: S(x)
-\item successor set: Succ(x)
-\item initial state: $\phi_{\{s\}}(x)$
-\item goal set: $\phi_T(x)$
-\item a search frontier: Open(x)
-\item the transition relation: Trans(x,x')
-\end{itemize}
+\only<7->{
+  \vspace*{1cm}
+  \begin{itemize}
+		%\item allowed states: S(x)
+		%\item successor set: Succ(x)
+		%\item initial state: $\phi_{\{s\}}(x)$
+		%\item goal set: $\phi_T(x)$
+		%\item a search frontier: Open(x)
+		%\item the transition relation: Trans(x,x')
+    \item initial state: $\phi_{\{s\}}(x)$
+  \only<8->{
+    \item a search frontier: Open(x)
+  }
+  \only<12->{
+    \item the transition relation: Trans(x,x')
+  }
+  \end{itemize}
+}
+
 \end{minipage}%
 \only<12->{%
  \begin{minipage}[t]{.54\linewidth}
@@ -377,7 +388,7 @@ $|\{0,1\}^n| = 2^n$
 \item We expect $|G|$ to be in $\t{POLY}(n)$, with $n$ the number of variables.\\
 This can be proven in some cases.
 \pause
-\item But finding the optimal variable ordering is NP-Complete (of course...)
+\item But finding the optimal variable ordering is NP-Complete
 \end{itemize}
 \pause
 \begin{center}
@@ -466,15 +477,15 @@ apply($\wedge,bdd1,bdd2$)
 \CASEOF{bdd1,bdd2}
 	\pause
 	\CASE{(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.$c$ $e_1$ $e_1'$ ]\end{tikzpicture},\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.$c$ $e_2$ $e_2'$ ]\end{tikzpicture})}
-	\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(e_1,e_2)$ $apply(e_1',e_2')$ ])\end{tikzpicture})
+	\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(\wedge,e_1,e_2)$ $apply(\wedge,e_1',e_2')$ ])\end{tikzpicture})
 	\ENDCASE
 	\pause\pause
 	\CASE{(bdd1,\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $e_2$ $e_2'$ ]\end{tikzpicture}) where $bdd1 < c$}
-		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(op,bdd1,e_2)$ $apply(op,bdd1,e_2')$ ]\end{tikzpicture})
+		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(\wedge,bdd1,e_2)$ $apply(\wedge,bdd1,e_2')$ ]\end{tikzpicture})
 	\ENDCASE
 	\pause\pause
 	\CASE{(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $e_1$ $e_1'$ ]\end{tikzpicture},bdd2) where $bdd2 < c$}
-		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(op,e_1,bdd2)$ $apply(op,e_1',bdd2)$ ]\end{tikzpicture})
+		\STATE reduce(\begin{tikzpicture}[scale=0.7,level distance=0.6cm,sibling distance=.2cm, edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]\Tree [.c $apply(\wedge,e_1,bdd2)$ $apply(\wedge,e_1',bdd2)$ ]\end{tikzpicture})
 	\ENDCASE
 	\pause\pause
 	\CASE{(0$|$1,0$|$1)}
@@ -510,9 +521,9 @@ Existential quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\vee BDD_{f[x_i=1]}$
 [every tree node/.style={draw,circle},
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
-\Tree [.\node (x) {x}; \edge[white];
-		[.\node[white](y1) {}; \edge[white]; [.\node(z) {z}; 0 1 ] ]
-		[.\node(y) {$y$}; 1 ]	  
+\Tree [.\node (x) {$x_0$}; \edge[white];
+		[.\node[white](y1) {}; \edge[white]; [.\node(z) {$x_2$}; 0 1 ] ]
+		[.\node(y) {$x_1$}; 1 ]	  
 	  ]
      
     \draw (y) -- (z);
@@ -520,7 +531,7 @@ Existential quantification($BDD_f$,$x_i$): $BDD_{f[x_i=0]}\vee BDD_{f[x_i=1]}$
 \end{tikzpicture}
 \end{minipage}\pause
 \begin{minipage}[c]{.1\linewidth}
-$\exists x :$
+$\exists x_0 :$
 \end{minipage}\pause
 \begin{minipage}[r]{.35\linewidth}
 \begin{tikzpicture}
@@ -528,7 +539,7 @@ $\exists x :$
    level distance=1.25cm,sibling distance=.5cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
 \Tree 
-		[.\node(y) {y};  [.\node(z) {z}; 0 1 ]  1 ]
+		[.\node(y) {$x_1$};  [.\node(z) {$x_2$}; 0 1 ]  1 ]
      
 \end{tikzpicture}
 \end{minipage}\pause
@@ -562,8 +573,8 @@ We perform a simple tree exploration.
 \item[\textsl{Goal}] is the set of goal states.
 \end{description}
 
-Le $f^*$ be the depth of the shallowest solution.
-The algorithm runs $O(f*)$ iterations. 
+Le $f^*$ be the depth of the shallowest solution.\\
+The algorithm runs $O(f^*)$ iterations. 
 
 \begin{columns}[b]
 	\begin{column}{.45\textwidth}
@@ -580,7 +591,7 @@ The algorithm runs $O(f*)$ iterations.
 	\begin{column}{.65\textwidth}
 	  \begin{algorithmic}
 	  
-		{\color<5-6>{gray}\color<handout>{black}
+		{\color<5-6>{gray}\color<7>{black}
 			\STATE{Open(x) $\leftarrow \Phi_{\{\t{init}\}}(x)$}
 			\pause[3]
 				\REPEAT
@@ -600,7 +611,55 @@ The algorithm runs $O(f*)$ iterations.
 		}
 		\end{algorithmic}
 	\end{column}
+	\pause
 \end{columns}
+
+\end{frame}
+
+\begin{frame}[c]
+\frametitle{Building a path to the solution}
+
+
+\begin{tikzpicture}
+
+\draw (2,2) ellipse (5 and 4);
+\node[above left] (S) at ($(2,2) + (135:5 and 4)$) {$S$};
+\draw (2.5,5) node[above right]  {$G$} circle (.7);
+\draw[fill] (0,0) node[below left] (S) {$\{s\}$} circle (.05); 
+\pause
+\draw[fill,color=white,draw=black] (1,1)  ellipse (1 and .8); 
+\node[below right] (S1) at(1.1,.9) {$S_1$};
+\draw[->] (0,0) -- ($(1,1) + (180:1 and .8)$);
+\draw[->] (0,0) -- ($(1,1) + (-80:1 and .8)$);
+\pause
+\draw[fill,color=white,draw=black] (2,2) ellipse (1.2 and .8); 
+\node[below right] (S2) at (2,2) {$S_2$};
+\draw[->] ($(1,1) + (140:1 and .8)$) -- ($(2,2) + (150:1.2 and .8)$);
+\draw[->] ($(1,1) + (-40:1 and .8)$) -- ($(2,2) + (-35:1.2 and .8)$);
+\pause
+\draw[fill,color=white,draw=black] (2.8,3.5)  ellipse (1.3 and 1.5); 
+\node[below right] (S3) at (3,3) {$S_3$};
+\draw[->] ($(2,2) + (170:1.2 and .8)$) -- ($(2.8,3.5) + (160:1.3 and 1.5)$);
+\draw[->] ($(2,2) + (-20:1.2 and .8)$) -- ($(2.8,3.5) + (-40:1.3 and 1.5)$);
+
+\draw (2.5,5) node[above right]  {$G$} circle (.7);
+
+\pause
+\draw[fill] (2.5,4.5) circle (.03); 
+\pause
+\draw (1.5,2) circle (.3); 
+\draw[->] (2.5,4.5) -- ($(1.5,2) + (150:.3)$);
+\draw[->] (2.5,4.5) -- ($(1.5,2) + (-20:.3)$);
+\pause
+\draw[fill] (1.6,1.95) circle (.03); 
+\pause
+\draw (1,1) circle (.2);
+\draw[->] (1.6,1.95) -- ($(1,1) + (150:.2)$);
+\draw[->] (1.6,1.95) -- ($(1,1) + (-30:.2)$);
+\pause
+\draw[fill] (1,1) circle (.03);
+\draw[->] (1,1) -- (0,0);
+\end{tikzpicture}
 
 \end{frame}
 
@@ -678,22 +737,21 @@ Both use:
 \item a set of open nodes with minimal heuristic value: $\t{Min}(x)$ 
 \end{itemize}
 
-Difference between them: the successor computation.\\[1cm]
+Difference between them: the successor computation.\\[.8cm]
 
 Shortest Path (Dijkstra) -- $O(f^*)$\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
-			       \exists x,f',w \cdot$ 
+			       \exists x,w \cdot$ 
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x') \land
-				       f_\t{min}=f+w \land
-				       f' = f_\t{min})[x \leftrightarrow x']$				       
-				       \\[1cm]
+				       f=f_\t{min}+w)[x \leftrightarrow x']$				       
+				       \\[.8cm]
 A* -- $O((f^*)^2)$\\[0.2cm]
 $\t{Succ}(f,x)$ $\leftarrow 
-				       \exists x,f',w,h,h' \cdot$\\
+				       \exists x,w,h,h' \cdot$\\
 				       $\phantom{} \hspace{1.2cm} ( \t{Min}(x) \land Trans(w,x,x')$
 				       $\phantom{} \hspace{1.2cm}
-				       \land \t{Heur}(h,x) \land \t{Heur}(h',x') \land f=f_\t{min}+w-h+h'
-				       \land f' = f_\t{min})[x \leftrightarrow x']$
+				       \land \t{Heur}(h,x) \land \t{Heur}(h',x') \land f=f_\t{min}+w-h+h')
+				       [x \leftrightarrow x']$
 
 \end{frame}
 
@@ -711,10 +769,10 @@ $\t{Succ}(f,x)$ $\leftarrow
 
 \section{Conclusion}
 \begin{frame}
-\frametitle{Conclusion: pro's of BDDs for symbolic search}
+\frametitle{Conclusion: BDDs and symbolic search}
 \begin{itemize}
-\item Sharing parts of the state vectors
-\item Polynomial size, exponential number of paths
+\item Compressed representation by sharing parts of the state vectors
+\item Expected polynomial size to store exponential number of paths
 \item Unique representation
 \item Functionnal exploration: no need to uncompress the state sets
 \end{itemize}
